@@ -1,0 +1,24 @@
+@model Producto
+
+<article class="ts-card">
+    <div class="ts-card__media">
+        <img src="~/images/@Model.Imagen" alt="@Model.Nombre" loading="lazy" />
+        @if (Model.Disponible)
+        {
+            <span class="ts-badge ts-badge--ok">Disponible</span>
+        }
+        else
+        {
+            <span class="ts-badge ts-badge--out">Agotado</span>
+        }
+    </div>
+    <div class="ts-card__body">
+        <span class="ts-card__cat">@Model.Categoria</span>
+        <h3 class="ts-card__title">@Model.Nombre</h3>
+        <p class="ts-card__desc">@Model.Descripcion</p>
+        <div class="ts-card__foot">
+            <span class="ts-card__price">$@Model.Precio.ToString("N2")</span>
+            <span class="ts-card__stock">@Model.Stock en stock</span>
+        </div>
+    </div>
+</article>

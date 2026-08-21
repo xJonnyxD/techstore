@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="420" height="350" fill="none">
+  <!-- resplandor de fondo -->
+  <circle cx="180" cy="150" r="120" fill="#0ea5e9" opacity="0.12"/>
+  <!-- laptop -->
+  <rect x="70" y="90" width="180" height="115" rx="10" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+  <rect x="82" y="102" width="156" height="91" rx="4" fill="#0f172a"/>
+  <rect x="96" y="116" width="70" height="10" rx="5" fill="#06b6d4"/>
+  <rect x="96" y="134" width="128" height="7" rx="3.5" fill="#334155"/>
+  <rect x="96" y="148" width="110" height="7" rx="3.5" fill="#334155"/>
+  <rect x="96" y="168" width="54" height="16" rx="8" fill="#0ea5e9"/>
+  <path d="M55 205h210l14 18H41z" fill="#334155"/>
+  <!-- teléfono flotante -->
+  <rect x="238" y="120" width="60" height="110" rx="12" fill="#f8fafc" stroke="#0ea5e9" stroke-width="3"/>
+  <rect x="250" y="134" width="36" height="36" rx="6" fill="#e0f2fe"/>
+  <rect x="250" y="178" width="36" height="7" rx="3.5" fill="#cbd5e1"/>
+  <rect x="250" y="190" width="26" height="7" rx="3.5" fill="#cbd5e1"/>
+  <circle cx="268" cy="214" r="5" fill="#06b6d4"/>
+  <!-- etiqueta de precio -->
+  <g transform="rotate(-8 96 96)">
+    <rect x="66" y="60" width="70" height="34" rx="8" fill="#06b6d4"/>
+    <text x="101" y="83" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="18" font-weight="700" fill="#0f172a">$379</text>
+  </g>
+</svg>

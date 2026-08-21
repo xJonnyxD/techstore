@@ -1,0 +1,66 @@
+@model Contacto
+@{
+    ViewData["Title"] = "Contáctenos";
+}
+
+<section class="ts-section container">
+    <header class="ts-section__head">
+        <h1>Contáctenos</h1>
+        <p>¿Tienes una duda o sugerencia? Escríbenos.</p>
+    </header>
+
+    <div class="ts-contact">
+        <!-- Formulario -->
+        <div class="ts-contact__form">
+            @if (TempData["Enviado"] != null)
+            {
+                <div class="ts-alert">@TempData["Enviado"]</div>
+            }
+
+            <form asp-action="Index" method="post" novalidate>
+                <div asp-validation-summary="ModelOnly" class="ts-form__error"></div>
+
+                <div class="ts-field">
+                    <label asp-for="Nombre"></label>
+                    <input asp-for="Nombre" class="ts-input" placeholder="Tu nombre" />
+                    <span asp-validation-for="Nombre" class="ts-form__error"></span>
+                </div>
+
+                <div class="ts-field">
+                    <label asp-for="Correo"></label>
+                    <input asp-for="Correo" class="ts-input" placeholder="tucorreo@ejemplo.com" />
+                    <span asp-validation-for="Correo" class="ts-form__error"></span>
+                </div>
+
+                <div class="ts-field">
+                    <label asp-for="Asunto"></label>
+                    <input asp-for="Asunto" class="ts-input" placeholder="Asunto del mensaje" />
+                    <span asp-validation-for="Asunto" class="ts-form__error"></span>
+                </div>
+
+                <div class="ts-field">
+                    <label asp-for="Mensaje"></label>
+                    <textarea asp-for="Mensaje" class="ts-input" rows="5" placeholder="Escribe tu mensaje"></textarea>
+                    <span asp-validation-for="Mensaje" class="ts-form__error"></span>
+                </div>
+
+                <button type="submit" class="ts-btn ts-btn--primary">Enviar mensaje</button>
+            </form>
+        </div>
+
+        <!-- Información de contacto -->
+        <aside class="ts-contact__info">
+            <h2>Información</h2>
+            <ul class="ts-contact__list">
+                <li><strong>Dirección</strong><br />San Salvador, El Salvador</li>
+                <li><strong>Correo</strong><br />contacto@techstore.com</li>
+                <li><strong>Teléfono</strong><br />+503 2222-3333</li>
+                <li><strong>Horario</strong><br />Lunes a sábado, 8:00 a.m. - 6:00 p.m.</li>
+            </ul>
+        </aside>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

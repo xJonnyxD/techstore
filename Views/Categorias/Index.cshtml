@@ -1,0 +1,27 @@
+@model IEnumerable<Categoria>
+@{
+    ViewData["Title"] = "Categorías";
+}
+
+<section class="ts-section container">
+    <header class="ts-section__head">
+        <h1>Categorías</h1>
+        <p>Organizamos la tienda para que encuentres todo más rápido.</p>
+    </header>
+
+    <div class="ts-catgrid">
+        @foreach (var categoria in Model)
+        {
+            <article class="ts-catcard">
+                <div class="ts-catcard__media">
+                    <img src="~/images/@categoria.Imagen" alt="@categoria.Nombre" />
+                </div>
+                <div class="ts-catcard__body">
+                    <h2>@categoria.Nombre</h2>
+                    <p>@categoria.Descripcion</p>
+                    <a class="ts-link" asp-controller="Productos" asp-action="Index">Ver productos &rarr;</a>
+                </div>
+            </article>
+        }
+    </div>
+</section>
