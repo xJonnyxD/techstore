@@ -13,7 +13,7 @@
         }
     </div>
     <div class="ts-card__body">
-        <span class="ts-card__cat">@Model.Categoria</span>
+        <span class="ts-card__cat">@(Model.Categoria?.Nombre ?? "Sin categoría")</span>
         <h3 class="ts-card__title">@Model.Nombre</h3>
         <p class="ts-card__desc">@Model.Descripcion</p>
         <div class="ts-card__foot">

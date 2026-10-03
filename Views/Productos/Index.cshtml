@@ -1,18 +1,76 @@
 @model IEnumerable<Producto>
 @{
     ViewData["Title"] = "Productos";
+    var buscar = ViewData["Buscar"] as string;
 }
 
 <section class="ts-section container">
-    <header class="ts-section__head">
-        <h1>Nuestros productos</h1>
-        <p>Explora nuestro catálogo de tecnología seleccionada.</p>
-    </header>
-
-    <div class="ts-grid">
-        @foreach (var producto in Model)
-        {
-            <partial name="_ProductCard" model="producto" />
-        }
+    <div class="ts-toolbar">
+        <div class="ts-section__head" style="margin-bottom:0">
+            <h1>Gestión de productos</h1>
+            <p>Administra el catálogo: crear, editar y eliminar productos.</p>
+        </div>
+        <a class="ts-btn ts-btn--primary" asp-action="Crear">+ Nuevo producto</a>
     </div>
+
+    <form method="get" asp-action="Index" class="ts-search" style="margin-bottom:1.25rem">
+        <input class="ts-input" type="text" name="buscar" value="@buscar" placeholder="Buscar por nombre, descripción o categoría..." />
+        <button class="ts-btn ts-btn--light" type="submit">Buscar</button>
+        @if (!string.IsNullOrWhiteSpace(buscar))
+        {
+            <a class="ts-btn ts-btn--outline" asp-action="Index">Limpiar</a>
+        }
+    </form>
+
+    @if (!Model.Any())
+    {
+        <div class="ts-alert ts-alert--error">No se encontraron productos.</div>
+    }
+    else
+    {
+        <div class="ts-tablewrap">
+            <table class="ts-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var producto in Model)
+                    {
+                        <tr>
+                            <td><img class="ts-table__img" src="~/images/@producto.Imagen" alt="@producto.Nombre" /></td>
+                            <td>@producto.Nombre</td>
+                            <td><span class="ts-pill ts-pill--cat">@(producto.Categoria?.Nombre ?? "—")</span></td>
+                            <td class="ts-table__price">$@producto.Precio.ToString("N2")</td>
+                            <td>@producto.Stock</td>
+                            <td>
+                                @if (producto.Disponible)
+                                {
+                                    <span class="ts-pill ts-pill--ok">Disponible</span>
+                                }
+                                else
+                                {
+                                    <span class="ts-pill ts-pill--out">Agotado</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="ts-actions">
+                                    <a class="ts-btn ts-btn--sm ts-btn--outline" asp-action="Detalle" asp-route-id="@producto.Id">Ver</a>
+                                    <a class="ts-btn ts-btn--sm ts-btn--light" asp-action="Editar" asp-route-id="@producto.Id">Editar</a>
+                                    <a class="ts-btn ts-btn--sm ts-btn--danger" asp-action="Eliminar" asp-route-id="@producto.Id">Eliminar</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
 </section>

@@ -1,0 +1,25 @@
+@model Producto
+@{
+    ViewData["Title"] = "Editar producto";
+}
+
+<section class="ts-section container">
+    <div class="ts-section__head">
+        <h1>Editar producto</h1>
+        <p>Modifica los datos del producto seleccionado.</p>
+    </div>
+
+    <form asp-action="Editar" method="post" class="ts-formcard">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <partial name="_FormProducto" model="Model" />
+        <div class="ts-form__actions">
+            <button type="submit" class="ts-btn ts-btn--primary">Guardar cambios</button>
+            <a asp-action="Index" class="ts-btn ts-btn--outline">Cancelar</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

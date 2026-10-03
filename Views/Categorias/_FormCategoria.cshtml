@@ -1,0 +1,21 @@
+@model Categoria
+
+<div asp-validation-summary="ModelOnly" class="ts-form__error"></div>
+
+<div class="ts-field">
+    <label asp-for="Nombre"></label>
+    <input asp-for="Nombre" class="ts-input" />
+    <span asp-validation-for="Nombre" class="ts-form__error"></span>
+</div>
+
+<div class="ts-field">
+    <label asp-for="Descripcion"></label>
+    <textarea asp-for="Descripcion" class="ts-input" rows="3"></textarea>
+    <span asp-validation-for="Descripcion" class="ts-form__error"></span>
+</div>
+
+<div class="ts-field">
+    <label asp-for="Imagen"></label>
+    <input asp-for="Imagen" class="ts-input" placeholder="ej. cat-gaming.svg" />
+    <span asp-validation-for="Imagen" class="ts-form__error"></span>
+</div>

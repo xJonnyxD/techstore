@@ -1,0 +1,40 @@
+@model Producto
+@{
+    ViewData["Title"] = Model.Nombre;
+}
+
+<section class="ts-section container">
+    <div class="ts-section__head">
+        <h1>@Model.Nombre</h1>
+        <p>Detalle del producto</p>
+    </div>
+
+    <div class="ts-detail">
+        <div class="ts-detail__media">
+            <img src="~/images/@Model.Imagen" alt="@Model.Nombre" />
+        </div>
+        <div>
+            <span class="ts-pill ts-pill--cat">@(Model.Categoria?.Nombre ?? "Sin categoría")</span>
+            <p style="margin-top:0.75rem">@Model.Descripcion</p>
+            <dl>
+                <dt>Precio</dt><dd class="ts-table__price">$@Model.Precio.ToString("N2")</dd>
+                <dt>Stock</dt><dd>@Model.Stock unidades</dd>
+                <dt>Estado</dt>
+                <dd>
+                    @if (Model.Disponible)
+                    {
+                        <span class="ts-pill ts-pill--ok">Disponible</span>
+                    }
+                    else
+                    {
+                        <span class="ts-pill ts-pill--out">Agotado</span>
+                    }
+                </dd>
+            </dl>
+            <div class="ts-form__actions">
+                <a class="ts-btn ts-btn--light" asp-action="Editar" asp-route-id="@Model.Id">Editar</a>
+                <a class="ts-btn ts-btn--outline" asp-action="Index">Volver</a>
+            </div>
+        </div>
+    </div>
+</section>

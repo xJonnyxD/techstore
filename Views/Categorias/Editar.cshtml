@@ -1,0 +1,25 @@
+@model Categoria
+@{
+    ViewData["Title"] = "Editar categoría";
+}
+
+<section class="ts-section container">
+    <div class="ts-section__head">
+        <h1>Editar categoría</h1>
+        <p>Modifica los datos de la categoría seleccionada.</p>
+    </div>
+
+    <form asp-action="Editar" method="post" class="ts-formcard">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <partial name="_FormCategoria" model="Model" />
+        <div class="ts-form__actions">
+            <button type="submit" class="ts-btn ts-btn--primary">Guardar cambios</button>
+            <a asp-action="Index" class="ts-btn ts-btn--outline">Cancelar</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

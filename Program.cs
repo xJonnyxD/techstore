@@ -1,8 +1,23 @@
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
+using TechStore.Data;
+using TechStore.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+
+// Entity Framework Core: registra el DbContext y lo configura para usar SQL Server
+// con la cadena de conexión "TechStoreDB".
+builder.Services.AddDbContext<TechStoreDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("TechStoreDB")));
+
+// Inyección de Dependencias: se asocia cada abstracción (interfaz) con su
+// implementación concreta. Ciclo de vida Scoped = una instancia por petición.
+// Para cambiar de implementación basta con modificar esta línea: los
+// controladores no se tocan (principio de inversión de dependencias / SOLID).
+builder.Services.AddScoped<IProductoService, ProductoService>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
@@ -12,6 +27,14 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 });
 
 var app = builder.Build();
+
+// Aplica las migraciones pendientes al iniciar: crea la base de datos, su
+// esquema y los datos iniciales la primera vez, sin intervención manual.
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<TechStoreDbContext>();
+    db.Database.Migrate();
+}
 
 app.UseForwardedHeaders();
 
