@@ -30,10 +30,24 @@ var app = builder.Build();
 
 // Aplica las migraciones pendientes al iniciar: crea la base de datos, su
 // esquema y los datos iniciales la primera vez, sin intervención manual.
+// Se reintenta porque, en contenedores, el servidor SQL puede tardar en
+// aceptar conexiones cuando ambos servicios arrancan a la vez.
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<TechStoreDbContext>();
-    db.Database.Migrate();
+    for (var intento = 1; intento <= 12; intento++)
+    {
+        try
+        {
+            db.Database.Migrate();
+            break;
+        }
+        catch (Exception ex) when (intento < 12)
+        {
+            app.Logger.LogWarning("Base de datos no disponible (intento {Intento}): {Mensaje}", intento, ex.Message);
+            Thread.Sleep(5000);
+        }
+    }
 }
 
 app.UseForwardedHeaders();

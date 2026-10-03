@@ -12,3 +12,6 @@ obj/
 ## Registros y temporales
 *.log
 *.tmp
+
+## Secretos de despliegue (no subir)
+.env

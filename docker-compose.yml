@@ -1,0 +1,32 @@
+# TechStore — despliegue en producción (app ASP.NET Core + SQL Server)
+# La app escucha en el puerto 8080 dentro del contenedor y se publica solo en
+# 127.0.0.1:8080 del host, para que Nginx (reverse proxy) la sirva en
+# https://techstore.yanes.xyz con HTTPS.
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: techstore-db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${SA_PASSWORD}
+      MSSQL_PID: "Express"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    restart: unless-stopped
+
+  web:
+    build: .
+    container_name: techstore-web
+    depends_on:
+      - db
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      # Cadena de conexión hacia el servicio "db" (sobrescribe appsettings.json).
+      ConnectionStrings__TechStoreDB: "Server=db;Database=TechStoreDB;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;Encrypt=False"
+    ports:
+      - "127.0.0.1:8080:8080"
+    restart: unless-stopped
+
+volumes:
+  mssql-data:
