@@ -1,14 +1,11 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TechStore.Models;
 
 namespace TechStore.Data;
 
-/// <summary>
-/// Contexto de Entity Framework Core. Administra la conexión con la base de datos
-/// y expone las entidades del dominio a través de sus DbSet. Cada DbSet se
-/// corresponde con una tabla.
-/// </summary>
-public class TechStoreDbContext : DbContext
+public class TechStoreDbContext : IdentityDbContext<IdentityUser>
 {
     public TechStoreDbContext(DbContextOptions<TechStoreDbContext> options)
         : base(options)
@@ -17,22 +14,18 @@ public class TechStoreDbContext : DbContext
 
     public DbSet<Categoria> Categorias => Set<Categoria>();
     public DbSet<Producto> Productos => Set<Producto>();
+    public DbSet<RegistroEvento> RegistroEventos => Set<RegistroEvento>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // --- Relación uno-a-muchos: Categoria 1 --- N Producto -----------------
-        // Una categoría tiene muchos productos; cada producto pertenece a una
-        // categoría. Restrict evita que se borre una categoría que aún tiene
-        // productos asociados (protege la integridad referencial).
         modelBuilder.Entity<Producto>()
             .HasOne(p => p.Categoria)
             .WithMany(c => c.Productos)
             .HasForeignKey(p => p.CategoriaId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // --- Datos iniciales (seed) -------------------------------------------
         modelBuilder.Entity<Categoria>().HasData(
             new Categoria { Id = 1, Nombre = "Computadoras", Descripcion = "Laptops, monitores y equipos para estudio y trabajo.", Imagen = "cat-computadoras.svg" },
             new Categoria { Id = 2, Nombre = "Smartphones", Descripcion = "Teléfonos y tablets de las marcas más buscadas.", Imagen = "cat-smartphones.svg" },

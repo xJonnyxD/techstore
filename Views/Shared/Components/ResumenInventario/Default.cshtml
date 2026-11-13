@@ -1,0 +1,28 @@
+@model TechStore.ViewComponents.ResumenInventarioModel
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="ts-stat-card">
+            <span class="ts-stat-card__value">@Model.TotalProductos</span>
+            <span class="ts-stat-card__label">Productos</span>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="ts-stat-card">
+            <span class="ts-stat-card__value">@Model.TotalCategorias</span>
+            <span class="ts-stat-card__label">Categorías</span>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="ts-stat-card">
+            <span class="ts-stat-card__value">@Model.ProductosAgotados</span>
+            <span class="ts-stat-card__label">Agotados</span>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="ts-stat-card">
+            <span class="ts-stat-card__value">$@Model.ValorInventario.ToString("N2")</span>
+            <span class="ts-stat-card__label">Valor inventario</span>
+        </div>
+    </div>
+</div>

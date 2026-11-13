@@ -1,0 +1,30 @@
+@model TechStore.Models.LoginViewModel
+@{ ViewData["Title"] = "Iniciar sesión"; }
+
+<section class="container" style="max-width:460px; margin-top:3rem">
+    <h2 class="ts-section__title" style="text-align:center">Iniciar sesión</h2>
+
+    <form asp-action="Login" method="post">
+        <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+            <label asp-for="UserName" class="form-label"></label>
+            <input asp-for="UserName" class="form-control" autofocus />
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label"></label>
+            <input asp-for="Password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div class="mb-3 form-check">
+            <input asp-for="RememberMe" class="form-check-input" />
+            <label asp-for="RememberMe" class="form-check-label"></label>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+    </form>
+    <p class="text-center mt-3">¿No tienes cuenta? <a asp-action="Register">Regístrate aquí</a></p>
+</section>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

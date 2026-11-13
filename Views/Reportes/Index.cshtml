@@ -1,0 +1,63 @@
+@{ ViewData["Title"] = "Reportes"; }
+
+<section class="container" style="margin-top:2rem">
+    <h2 class="ts-section__title">Reportes de Productos</h2>
+
+    @await Component.InvokeAsync("ResumenInventario")
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title" style="color:var(--ts-red,#dc3545)">Reporte PDF</h5>
+                    <p class="card-text">Genera un documento PDF con la tabla de productos, estilos profesionales y resumen de totales. Utiliza la librería <strong>QuestPDF</strong> con su API fluida.</p>
+                    <div class="mb-3">
+                        <label class="form-label">Filtrar por categoría:</label>
+                        <select id="filtroCategoriaPdf" class="form-select">
+                            <option value="">Todas las categorías</option>
+                            @foreach (var cat in (List<TechStore.Models.Categoria>)ViewBag.Categorias)
+                            {
+                                <option value="@cat.Id">@cat.Nombre</option>
+                            }
+                        </select>
+                    </div>
+                    <a id="btnPdf" href="@Url.Action("GenerarPDF")" class="btn btn-danger">Generar PDF</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title" style="color:var(--ts-green,#198754)">Reporte Excel</h5>
+                    <p class="card-text">Exporta los productos a un archivo Excel (.xlsx) con encabezados formateados, filas alternadas y resumen. Utiliza la librería <strong>ClosedXML</strong>.</p>
+                    <div class="mb-3">
+                        <label class="form-label">Filtrar por categoría:</label>
+                        <select id="filtroCategoriaExcel" class="form-select">
+                            <option value="">Todas las categorías</option>
+                            @foreach (var cat in (List<TechStore.Models.Categoria>)ViewBag.Categorias)
+                            {
+                                <option value="@cat.Id">@cat.Nombre</option>
+                            }
+                        </select>
+                    </div>
+                    <a id="btnExcel" href="@Url.Action("ExportarExcel")" class="btn btn-success">Exportar a Excel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+<script>
+    document.getElementById('filtroCategoriaPdf').addEventListener('change', function () {
+        var catId = this.value;
+        var url = '@Url.Action("GenerarPDF")';
+        document.getElementById('btnPdf').href = catId ? url + '?categoriaId=' + catId : url;
+    });
+    document.getElementById('filtroCategoriaExcel').addEventListener('change', function () {
+        var catId = this.value;
+        var url = '@Url.Action("ExportarExcel")';
+        document.getElementById('btnExcel').href = catId ? url + '?categoriaId=' + catId : url;
+    });
+</script>
+}

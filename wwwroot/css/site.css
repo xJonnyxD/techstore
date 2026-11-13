@@ -392,3 +392,24 @@ a { color: var(--ts-cyan-2); }
   .ts-formrow { grid-template-columns: 1fr; }
   .ts-detail { grid-template-columns: 1fr; }
 }
+
+/* --- Stat cards (View Component) ----------------------------------------- */
+.ts-stat-card {
+  background: var(--ts-navy-2);
+  border-radius: 12px;
+  padding: 1.2rem;
+  text-align: center;
+  border: 1px solid rgba(6,182,212,.15);
+}
+.ts-stat-card__value {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--ts-cyan);
+}
+.ts-stat-card__label {
+  font-size: .82rem;
+  color: var(--ts-muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}

@@ -1,0 +1,36 @@
+@model IEnumerable<TechStore.Models.RegistroEvento>
+@{ ViewData["Title"] = "Registro de eventos"; }
+
+<section class="container" style="margin-top:2rem">
+    <h2 class="ts-section__title">Registro de eventos (Logging)</h2>
+
+    <div class="table-responsive">
+        <table class="table table-sm table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Nivel</th>
+                    <th>Origen</th>
+                    <th>Mensaje</th>
+                    <th>Usuario</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var e in Model)
+                {
+                    <tr>
+                        <td>@e.Fecha.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                        <td>
+                            <span class="badge @(e.Nivel == "Error" ? "bg-danger" : e.Nivel == "Advertencia" ? "bg-warning text-dark" : "bg-info")">
+                                @e.Nivel
+                            </span>
+                        </td>
+                        <td>@e.Origen</td>
+                        <td>@e.Mensaje</td>
+                        <td>@(e.Usuario ?? "-")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

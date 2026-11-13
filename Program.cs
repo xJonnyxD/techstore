@@ -1,23 +1,50 @@
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TechStore.Data;
 using TechStore.Services;
+using QuestPDF.Infrastructure;
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-// Entity Framework Core: registra el DbContext y lo configura para usar SQL Server
-// con la cadena de conexión "TechStoreDB".
-builder.Services.AddDbContext<TechStoreDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("TechStoreDB")));
+var connectionString = builder.Configuration.GetConnectionString("TechStoreDB");
+if (connectionString != null && connectionString.Contains("(localdb)", StringComparison.OrdinalIgnoreCase))
+{
+    var dbPath = Path.Combine(builder.Environment.ContentRootPath, "TechStore.db");
+    builder.Services.AddDbContext<TechStoreDbContext>(options =>
+        options.UseSqlite($"Data Source={dbPath}"));
+}
+else
+{
+    builder.Services.AddDbContext<TechStoreDbContext>(options =>
+        options.UseSqlServer(connectionString));
+}
 
-// Inyección de Dependencias: se asocia cada abstracción (interfaz) con su
-// implementación concreta. Ciclo de vida Scoped = una instancia por petición.
-// Para cambiar de implementación basta con modificar esta línea: los
-// controladores no se tocan (principio de inversión de dependencias / SOLID).
+builder.Services
+    .AddIdentity<IdentityUser, IdentityRole>(options =>
+    {
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequiredLength = 6;
+        options.User.RequireUniqueEmail = true;
+    })
+    .AddEntityFrameworkStores<TechStoreDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login";
+    options.LogoutPath = "/Account/Logout";
+    options.AccessDeniedPath = "/Account/AccesoDenegado";
+});
+
 builder.Services.AddScoped<IProductoService, ProductoService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<IRegistroEventoService, RegistroEventoService>();
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
@@ -28,25 +55,39 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 var app = builder.Build();
 
-// Aplica las migraciones pendientes al iniciar: crea la base de datos, su
-// esquema y los datos iniciales la primera vez, sin intervención manual.
-// Se reintenta porque, en contenedores, el servidor SQL puede tardar en
-// aceptar conexiones cuando ambos servicios arrancan a la vez.
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<TechStoreDbContext>();
-    for (var intento = 1; intento <= 12; intento++)
+    try
     {
-        try
+        db.Database.Migrate();
+    }
+    catch
+    {
+        db.Database.EnsureCreated();
+    }
+
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+    foreach (var rol in new[] { "Administrador", "Usuario" })
+    {
+        if (!await roleManager.RoleExistsAsync(rol))
+            await roleManager.CreateAsync(new IdentityRole(rol));
+    }
+
+    var adminUser = await userManager.FindByNameAsync("admin");
+    if (adminUser is null)
+    {
+        adminUser = new IdentityUser
         {
-            db.Database.Migrate();
-            break;
-        }
-        catch (Exception ex) when (intento < 12)
-        {
-            app.Logger.LogWarning("Base de datos no disponible (intento {Intento}): {Mensaje}", intento, ex.Message);
-            Thread.Sleep(5000);
-        }
+            UserName = "admin",
+            Email = "admin@techstore.com",
+            EmailConfirmed = true
+        };
+        var creado = await userManager.CreateAsync(adminUser, "Admin123");
+        if (creado.Succeeded)
+            await userManager.AddToRoleAsync(adminUser, "Administrador");
     }
 }
 
@@ -58,10 +99,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseStatusCodePagesWithReExecute("/Home/Error", "?code={0}");
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
